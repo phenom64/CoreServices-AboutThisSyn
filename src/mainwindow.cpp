@@ -15,12 +15,15 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QPainter>
+#include <QGraphicsDropShadowEffect>
+#include <QFile>
 #include <QStyle>
 #include <QDebug>
 #include <QFont>
 #include <QPalette>
 #include <QLinearGradient>
-#include <QGraphicsDropShadowEffect>
+#include <QPropertyAnimation>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -211,4 +214,28 @@ void MainWindow::setupUi()
 void MainWindow::openMoreInfo()
 {
     QProcess::startDetached("kinfocenter", QStringList());
+    // Close the app when "More Info" is launched, triggering the fade out.
+    close();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    // Fade out effect
+    if (windowOpacity() > 0.0) {
+        // Prevent recursive generic close events or instant closing
+        event->ignore();
+        
+        QPropertyAnimation *anim = new QPropertyAnimation(this, "windowOpacity");
+        anim->setDuration(300); // 300ms smooth fade
+        anim->setStartValue(1.0);
+        anim->setEndValue(0.0);
+        anim->setEasingCurve(QEasingCurve::OutQuad);
+        
+        // When animation finishes, truly quit
+        connect(anim, &QPropertyAnimation::finished, qApp, &QApplication::quit);
+        
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
+    } else {
+        event->accept();
+    }
 }

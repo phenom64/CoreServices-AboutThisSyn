@@ -10,12 +10,17 @@
 
 #include "mainwindow.h"
 #include <QApplication>
+#include <QIcon>
 #include <QDebug>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    app.setApplicationName("AboutThisSyn");
+    
+    // Icon (hwinfo)
+    app.setWindowIcon(QIcon::fromTheme("hwinfo"));
+    
+    app.setApplicationName("About This Computer");
     app.setApplicationDisplayName("About This Computer");
     app.setOrganizationName("Syndromatic");
     app.setOrganizationDomain("syndromatic.com");

@@ -22,6 +22,9 @@ public:
 private slots:
     void openMoreInfo();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     void setupUi();
     
